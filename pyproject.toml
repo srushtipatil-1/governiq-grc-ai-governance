@@ -1,0 +1,19 @@
+[project]
+name = "governiq"
+version = "0.1.0"
+description = "Integrated GRC and AI governance platform (educational portfolio project)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
