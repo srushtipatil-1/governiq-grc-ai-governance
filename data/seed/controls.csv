@@ -1,0 +1,34 @@
+code,title,domain,owner,control_type,nature,frequency,is_key,maps_to
+CTL-GOV-01,Information security policy approved and reviewed every year,Governance,kabir.ciso,Preventive,Manual,Annual,yes,ISO27001:A.5.1;NISTCSF:GV.PO-01
+CTL-GOV-02,Enterprise risk assessment performed every year,Governance,priya.analyst,Detective,Manual,Annual,yes,NISTCSF:GV.RM-01
+CTL-IAM-01,Joiner access granted only on an approved request,Access,rahul.itops,Preventive,Manual,Per event,no,ISO27001:A.5.18;NISTCSF:PR.AA-05
+CTL-IAM-02,Leaver access removed within 24 hours,Access,rahul.itops,Preventive,Manual,Per event,yes,ISO27001:A.5.18;NISTCSF:PR.AA-05;DPDP:S.8(5)
+CTL-IAM-03,Quarterly user access review,Access,rahul.itops,Detective,Manual,Quarterly,yes,ISO27001:A.5.15;ISO27001:A.5.18;NISTCSF:PR.AA-05;DPDP:S.8(5)
+CTL-IAM-04,MFA for remote and privileged access,Access,rahul.itops,Preventive,Automated,Continuous,yes,ISO27001:A.8.5;NISTCSF:PR.AA-03
+CTL-IAM-05,Privileged accounts restricted and reviewed monthly,Access,rahul.itops,Detective,Manual,Monthly,yes,ISO27001:A.8.2;NISTCSF:PR.AA-05
+CTL-OPS-01,Daily backups with quarterly restore tests,Operations,rahul.itops,Corrective,Automated,Daily,yes,ISO27001:A.8.13;NISTCSF:PR.DS-11
+CTL-OPS-02,Critical patches applied within 14 days,Operations,rahul.itops,Preventive,Manual,Monthly,yes,ISO27001:A.8.8;NISTCSF:ID.RA-01;NISTCSF:PR.PS-02
+CTL-OPS-03,Security logs collected centrally and kept for one year,Operations,rahul.itops,Detective,Automated,Continuous,no,ISO27001:A.8.15;NISTCSF:DE.CM-01
+CTL-OPS-04,Anti-malware active on all endpoints and servers,Operations,rahul.itops,Preventive,Automated,Continuous,no,ISO27001:A.8.7;NISTCSF:DE.CM-09
+CTL-OPS-05,Personal data encrypted at rest and in transit,Data protection,vikram.eng,Preventive,Automated,Continuous,yes,ISO27001:A.8.24;NISTCSF:PR.DS-01;NISTCSF:PR.DS-02;DPDP:S.8(5)
+CTL-CHG-01,Production changes approved and tested before release,Change,vikram.eng,Preventive,Manual,Per event,yes,ISO27001:A.8.32;NISTCSF:PR.PS-01
+CTL-DEV-01,Code review and security scanning before every release,Development,vikram.eng,Preventive,Automated,Per event,no,ISO27001:A.8.25;NISTCSF:PR.PS-06
+CTL-IR-01,Incident response plan tested every year,Incident,kabir.ciso,Corrective,Manual,Annual,yes,ISO27001:A.5.24;NISTCSF:RS.MA-01
+CTL-IR-02,Personal data breaches reported to the Board and affected people,Incident,sana.dpo,Corrective,Manual,Per event,yes,DPDP:S.8(6)
+CTL-TPR-01,Vendor risk assessment before onboarding and every year,Third party,priya.analyst,Preventive,Manual,Annual,yes,ISO27001:A.5.19;NISTCSF:GV.SC-07;ISO42001:A.10.3;NISTAIRMF:GOVERN 6.1;RBIFREEAI:FA-TPR-01
+CTL-TPR-02,Vendor contracts include security privacy and AI clauses,Third party,priya.analyst,Preventive,Manual,Per event,no,ISO27001:A.5.20;NISTCSF:GV.SC-05;RBIFREEAI:FA-TPR-02
+CTL-HR-01,Security awareness training completed every year,People,neha.hr,Preventive,Manual,Annual,no,ISO27001:A.6.3;NISTCSF:PR.AT-01
+CTL-PRV-01,Privacy notice shown and consent captured before processing,Privacy,sana.dpo,Preventive,Automated,Per event,yes,DPDP:S.5;DPDP:S.6;ISO27001:A.5.34
+CTL-PRV-02,Data principal requests and grievances handled on time,Privacy,sana.dpo,Corrective,Manual,Per event,no,DPDP:S.11;DPDP:S.13
+CTL-PRV-03,Retention schedule enforced and expired data erased,Privacy,sana.dpo,Preventive,Manual,Quarterly,no,DPDP:S.8(7)
+CTL-AI-01,AI policy approved by the board and reviewed every year,AI governance,meera.aigov,Preventive,Manual,Annual,yes,ISO42001:A.2.2;NISTAIRMF:GOVERN 1.2;RBIFREEAI:FA-GOV-01
+CTL-AI-02,AI system inventory kept complete and current,AI governance,meera.aigov,Detective,Manual,Quarterly,yes,NISTAIRMF:GOVERN 1.6;NISTCSF:ID.AM-02
+CTL-AI-03,AI impact assessment approved before deployment,AI governance,meera.aigov,Preventive,Manual,Per event,yes,ISO42001:A.5.2;ISO42001:A.5.3;NISTAIRMF:MAP 5.1;DPDP:S.10
+CTL-AI-04,Independent model validation before deployment and every year,AI governance,meera.aigov,Detective,Manual,Annual,yes,ISO42001:A.6.2.4;NISTAIRMF:MEASURE 2.5;RBIFREEAI:FA-TPR-01
+CTL-AI-05,Fairness tested across customer groups before release,AI governance,vikram.eng,Detective,Automated,Per event,yes,NISTAIRMF:MEASURE 2.11;ISO42001:A.7.4
+CTL-AI-06,Model performance and drift monitored monthly,AI governance,vikram.eng,Detective,Automated,Monthly,yes,ISO42001:A.6.2.6;NISTAIRMF:MEASURE 2.4;RBIFREEAI:FA-ASR-02
+CTL-AI-07,Adverse AI decisions reviewed by a human on request,AI governance,meera.aigov,Corrective,Manual,Per event,yes,NISTAIRMF:MAP 3.5;ISO42001:A.9.2
+CTL-AI-08,Customers told when they interact with AI,AI governance,meera.aigov,Preventive,Automated,Continuous,no,RBIFREEAI:FA-PRO-01;ISO42001:A.8.2
+CTL-AI-09,LLM tested for prompt injection and data leakage before release,AI governance,vikram.eng,Detective,Automated,Per event,yes,OWASPLLM:LLM01;OWASPLLM:LLM02;OWASPLLM:LLM07;OWASPLLM:LLM09
+CTL-AI-10,AI agent permissions restricted and risky actions need human approval,AI governance,vikram.eng,Preventive,Automated,Continuous,no,OWASPLLM:LLM06;ISO42001:A.9.2
+CTL-AI-11,AI incidents logged investigated and reported,AI governance,meera.aigov,Corrective,Manual,Per event,no,NISTAIRMF:MANAGE 4.3;ISO42001:A.6.2.8

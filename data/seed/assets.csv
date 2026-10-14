@@ -1,0 +1,6 @@
+code,name,asset_type,owner,holds_personal_data,criticality
+AST-01,LoanCore,Application,vikram.eng,yes,High
+AST-02,KYC Vault,Data store,sana.dpo,yes,High
+AST-03,Customer mobile app,Application,vikram.eng,yes,High
+AST-04,HRMS,Application,neha.hr,yes,Medium
+AST-05,Cloud platform,Infrastructure,rahul.itops,yes,High

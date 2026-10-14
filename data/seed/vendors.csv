@@ -1,0 +1,7 @@
+code,name,service,criticality,is_ai_provider,has_soc2_report,certificate_expiry
+VEN-01,CloudNimbus Hosting,Cloud infrastructure hosting all applications,High,no,yes,2027-03-31
+VEN-02,SentinelPay Analytics,FraudShield transaction fraud detection model,High,yes,yes,2026-12-15
+VEN-03,LexiCore AI,Large language model API used by the Sahayak chatbot,High,yes,no,
+VEN-04,HireWise SaaS,TalentSift resume screening tool,Medium,yes,no,
+VEN-05,VeriKYC Services,Identity and KYC verification,High,no,yes,2026-11-30
+VEN-06,MsgBridge,SMS gateway for one-time passwords,Medium,no,no,

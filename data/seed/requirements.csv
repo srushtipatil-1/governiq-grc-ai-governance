@@ -1,0 +1,86 @@
+framework,ref,title
+ISO27001,A.5.1,Information security policies are defined and reviewed
+ISO27001,A.5.15,Rules for access control are set
+ISO27001,A.5.18,Access rights are granted reviewed and removed
+ISO27001,A.5.19,Security risks from suppliers are managed
+ISO27001,A.5.20,Security is addressed in supplier agreements
+ISO27001,A.5.23,Use of cloud services is secured
+ISO27001,A.5.24,Incident management is planned and prepared
+ISO27001,A.5.30,ICT is ready for business continuity
+ISO27001,A.5.34,Privacy and personal data are protected
+ISO27001,A.6.3,Staff receive security awareness and training
+ISO27001,A.8.2,Privileged access is restricted and managed
+ISO27001,A.8.5,Authentication is secure
+ISO27001,A.8.7,Systems are protected against malware
+ISO27001,A.8.8,Technical vulnerabilities are managed
+ISO27001,A.8.13,Information is backed up and restores are tested
+ISO27001,A.8.15,Activities are logged
+ISO27001,A.8.16,Systems and networks are monitored for anomalies
+ISO27001,A.8.24,Cryptography is used effectively
+ISO27001,A.8.25,Development follows a secure life cycle
+ISO27001,A.8.32,Changes are controlled
+NISTCSF,GV.PO-01,Cybersecurity risk policy is established and communicated
+NISTCSF,GV.RM-01,Risk management objectives are agreed
+NISTCSF,GV.SC-05,Cybersecurity requirements are included in supplier contracts
+NISTCSF,GV.SC-07,Supplier risks are identified and assessed
+NISTCSF,ID.AM-02,Software and services inventories are maintained
+NISTCSF,ID.RA-01,Vulnerabilities are identified and recorded
+NISTCSF,PR.AA-03,Users and services are authenticated
+NISTCSF,PR.AA-05,Access permissions follow least privilege and are reviewed
+NISTCSF,PR.AT-01,Personnel receive awareness training
+NISTCSF,PR.DS-01,Data at rest is protected
+NISTCSF,PR.DS-02,Data in transit is protected
+NISTCSF,PR.DS-11,Backups are created and tested
+NISTCSF,PR.PS-01,Configuration management practices are applied
+NISTCSF,PR.PS-02,Software is maintained and patched
+NISTCSF,PR.PS-06,Secure software development practices are used
+NISTCSF,DE.CM-01,Networks are monitored for adverse events
+NISTCSF,DE.CM-09,Computing hardware and software are monitored
+NISTCSF,RS.MA-01,The incident response plan is executed
+NISTCSF,RC.RP-01,The recovery plan is executed after an incident
+DPDP,S.5,Notice is given before collecting personal data
+DPDP,S.6,Valid consent is obtained
+DPDP,S.8(5),Reasonable security safeguards protect personal data (Rule 6)
+DPDP,S.8(6),Personal data breaches are reported to the Board and affected people (Rule 7)
+DPDP,S.8(7),Personal data is erased when its purpose is served
+DPDP,S.10,Significant Data Fiduciary duties such as DPIA and audit
+DPDP,S.11,Data principals can access information about their data
+DPDP,S.13,Grievances are redressed
+ISO42001,A.2.2,An AI policy is documented
+ISO42001,A.3.2,AI roles and responsibilities are defined
+ISO42001,A.5.2,AI system impact assessment process exists
+ISO42001,A.5.3,AI impact assessments are documented
+ISO42001,A.6.2.4,AI systems are verified and validated
+ISO42001,A.6.2.6,AI systems are operated and monitored
+ISO42001,A.6.2.8,AI system event logs are recorded
+ISO42001,A.7.4,Data quality for AI is defined and checked
+ISO42001,A.8.2,Users receive information about the AI system
+ISO42001,A.9.2,Processes for responsible use of AI exist
+ISO42001,A.10.3,AI suppliers are managed
+NISTAIRMF,GOVERN 1.2,Trustworthy AI is built into policies
+NISTAIRMF,GOVERN 1.6,An inventory of AI systems is maintained
+NISTAIRMF,GOVERN 2.1,AI roles and responsibilities are documented
+NISTAIRMF,GOVERN 6.1,Third-party AI risks are addressed
+NISTAIRMF,MAP 3.5,Human oversight processes are defined
+NISTAIRMF,MAP 5.1,Impacts on people are identified
+NISTAIRMF,MEASURE 2.4,AI behaviour is monitored in production
+NISTAIRMF,MEASURE 2.5,AI validity and reliability are demonstrated
+NISTAIRMF,MEASURE 2.11,Fairness and bias are evaluated
+NISTAIRMF,MANAGE 2.4,AI systems can be disengaged or deactivated
+NISTAIRMF,MANAGE 4.3,AI incidents are tracked and communicated
+RBIFREEAI,FA-GOV-01,Board-approved AI policy
+RBIFREEAI,FA-PRO-01,Customers are told when they interact with AI
+RBIFREEAI,FA-ASR-01,AI-specific audit framework
+RBIFREEAI,FA-ASR-02,Business continuity covers AI model degradation
+RBIFREEAI,FA-TPR-01,Third-party AI models are validated like in-house models
+RBIFREEAI,FA-TPR-02,Outsourcing contracts include AI-specific clauses
+OWASPLLM,LLM01,Prompt injection
+OWASPLLM,LLM02,Sensitive information disclosure
+OWASPLLM,LLM03,Supply chain
+OWASPLLM,LLM04,Data and model poisoning
+OWASPLLM,LLM05,Improper output handling
+OWASPLLM,LLM06,Excessive agency
+OWASPLLM,LLM07,System prompt leakage
+OWASPLLM,LLM08,Vector and embedding weaknesses
+OWASPLLM,LLM09,Misinformation
+OWASPLLM,LLM10,Unbounded consumption

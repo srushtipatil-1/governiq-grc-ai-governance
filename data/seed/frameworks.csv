@@ -1,0 +1,8 @@
+code,name,claim_level
+ISO27001,ISO/IEC 27001:2022 Annex A,Partial mapping
+NISTCSF,NIST Cybersecurity Framework 2.0,Partial mapping
+DPDP,DPDP Act 2023 and DPDP Rules 2025,Framework-inspired
+ISO42001,ISO/IEC 42001:2023 Annex A,Partial mapping
+NISTAIRMF,NIST AI Risk Management Framework 1.0,Framework-inspired
+RBIFREEAI,RBI FREE-AI Committee recommendations (Aug 2025),Framework-inspired
+OWASPLLM,OWASP Top 10 for LLM Applications 2025,Partial mapping

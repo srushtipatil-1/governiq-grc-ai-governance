@@ -1,0 +1,10 @@
+username,full_name,role,department
+admin.demo,Demo Administrator,Admin,IT
+priya.analyst,Priya Deshmukh,GRC Analyst,Risk & Compliance
+rahul.itops,Rahul Kulkarni,Control Owner,IT Operations
+vikram.eng,Vikram Joshi,Control Owner,Engineering
+neha.hr,Neha Pawar,Control Owner,Human Resources
+sana.dpo,Sana Shaikh,Control Owner,Privacy Office
+kabir.ciso,Kabir Mehta,Control Owner,Information Security
+meera.aigov,Meera Iyer,AI Governance Lead,AI Governance Office
+arjun.audit,Arjun Rao,Auditor,Internal Audit

@@ -1,0 +1,31 @@
+code,title,category,owner,asset,vendor,ai_system,likelihood,impact,treatment,due_date,controls
+RSK-001,Ransomware encrypts loan systems and their backups,Cyber,rahul.itops,AST-05,,,4,5,Mitigate,2026-11-30,CTL-OPS-01;CTL-OPS-02;CTL-OPS-04
+RSK-002,Phishing steals employee login credentials,Cyber,kabir.ciso,,,,4,3,Mitigate,2026-12-15,CTL-HR-01;CTL-IAM-04
+RSK-003,Unpatched internet-facing server is exploited,Cyber,rahul.itops,AST-03,,,3,4,Mitigate,2026-12-15,CTL-OPS-02
+RSK-004,Former employees can still reach loan data,Cyber,rahul.itops,AST-01,,,4,4,Mitigate,2026-11-15,CTL-IAM-02;CTL-IAM-03
+RSK-005,Excessive privileged access is misused,Cyber,rahul.itops,AST-05,,,2,5,Mitigate,2027-01-31,CTL-IAM-05;CTL-OPS-03
+RSK-006,Unapproved production change causes an outage,Operational,vikram.eng,AST-01,,,3,3,Mitigate,2027-01-31,CTL-CHG-01
+RSK-007,Security incident is not detected in time,Cyber,kabir.ciso,,,,3,4,Mitigate,2026-12-31,CTL-OPS-03;CTL-IR-01
+RSK-008,Backup restore fails during a major outage,Operational,rahul.itops,AST-05,,,2,4,Mitigate,2027-02-28,CTL-OPS-01
+RSK-009,Insecure code in the mobile app exposes customer data,Cyber,vikram.eng,AST-03,,,3,4,Mitigate,2026-12-31,CTL-DEV-01
+RSK-010,Weak authentication on admin consoles,Cyber,rahul.itops,AST-05,,,3,4,Mitigate,2026-12-15,CTL-IAM-04
+RSK-011,Customer data processed without valid consent,Privacy,sana.dpo,AST-03,,,3,4,Mitigate,2027-03-31,CTL-PRV-01
+RSK-012,Personal data breach not reported to the Board on time,Privacy,sana.dpo,,,,2,5,Mitigate,2027-03-31,CTL-IR-02;CTL-IR-01
+RSK-013,Personal data kept longer than needed,Privacy,sana.dpo,AST-02,,,4,2,Mitigate,2027-04-30,CTL-PRV-03
+RSK-014,Data principal requests are missed,Privacy,sana.dpo,,,,3,2,Mitigate,2027-04-30,CTL-PRV-02
+RSK-015,Unencrypted KYC documents are exposed,Privacy,sana.dpo,AST-02,,,2,5,Mitigate,2026-12-31,CTL-OPS-05
+RSK-016,Cloud provider outage halts lending,Third party,priya.analyst,,VEN-01,,2,4,Transfer,2027-01-31,CTL-TPR-01;CTL-OPS-01
+RSK-017,KYC vendor breach leaks customer identities,Third party,priya.analyst,,VEN-05,,2,5,Mitigate,2026-12-31,CTL-TPR-01;CTL-TPR-02
+RSK-018,Vendor contracts lack security and breach clauses,Third party,priya.analyst,,,,3,3,Mitigate,2027-02-28,CTL-TPR-02
+RSK-019,SMS gateway exposes one-time passwords,Third party,priya.analyst,,VEN-06,,2,3,Accept,2027-06-30,CTL-TPR-01
+RSK-020,CreditLens rejects applicants unfairly by gender or region,AI,meera.aigov,,,AI-01,3,5,Mitigate,2026-11-30,CTL-AI-05;CTL-AI-07;CTL-AI-04
+RSK-021,CreditLens accuracy drifts as borrower behaviour changes,AI,vikram.eng,,,AI-01,4,3,Mitigate,2026-12-31,CTL-AI-06
+RSK-022,CreditLens decisions cannot be explained to customers,AI,meera.aigov,,,AI-01,3,4,Mitigate,2027-01-31,CTL-AI-07;CTL-AI-08
+RSK-023,Sahayak leaks customer data through prompt injection,AI,vikram.eng,,VEN-03,AI-03,4,4,Mitigate,2026-11-30,CTL-AI-09
+RSK-024,Sahayak gives wrong loan information,AI,vikram.eng,,,AI-03,4,3,Mitigate,2026-12-15,CTL-AI-09;CTL-AI-08
+RSK-025,Sahayak reveals its system prompt and internal rules,AI,vikram.eng,,,AI-03,3,2,Mitigate,2027-01-31,CTL-AI-09
+RSK-026,TalentSift screens out candidates unfairly,AI,neha.hr,,VEN-04,AI-04,3,4,Mitigate,2026-12-31,CTL-AI-03;CTL-AI-05
+RSK-027,FraudShield vendor changes its model without notice,AI,priya.analyst,,VEN-02,AI-02,3,3,Mitigate,2027-01-31,CTL-AI-04;CTL-TPR-02
+RSK-028,AI system goes live without an impact assessment,AI,meera.aigov,,,,3,4,Mitigate,2026-12-15,CTL-AI-03;CTL-AI-02
+RSK-029,Staff use unregistered shadow AI tools with customer data,AI,meera.aigov,,,,4,3,Mitigate,2026-12-31,CTL-AI-01;CTL-AI-02
+RSK-030,AI agent takes actions beyond its permissions,AI,vikram.eng,,,AI-03,2,4,Mitigate,2027-02-28,CTL-AI-10
