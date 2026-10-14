@@ -107,3 +107,45 @@
   .giq-stage::before { top: 0; bottom: 0; left: 8px; right: auto; width: 3px; height: auto; }
   .giq-stage .giq-pin { top: 0; }
 }
+
+/* ---------- Module pages ---------- */
+.giq-page-head h1 { font-size: 36px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 6px; padding: 0; }
+.giq-page-head p { color: var(--muted); font-size: 16px; margin: 0 0 18px; max-width: 70ch; }
+
+/* Rating colours: one meaning everywhere */
+.crit { --band: #B23A48; --band-bg: #F6DDE0; --band-ink: #8E2433; }
+.high { --band: #E8A33D; --band-bg: #FBEBD2; --band-ink: #8A5A12; }
+.med  { --band: #D8C46A; --band-bg: #F3EFD9; --band-ink: #6B5E1E; }
+.low  { --band: #3FA393; --band-bg: #DCEFEA; --band-ink: #17605A; }
+
+.giq-dist { display: flex; height: 10px; border-radius: 6px; overflow: hidden; gap: 2px; max-width: 760px; }
+.giq-dist-seg { background: var(--band); }
+.giq-dist-legend { display: flex; flex-wrap: wrap; gap: 18px; font-size: 14px; color: var(--muted); margin: 10px 0 8px; }
+.giq-dist-legend b { color: var(--ink); }
+.giq-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--band); margin-right: 6px; }
+
+/* Heat map */
+.giq-hm-wrap { display: grid; grid-template-columns: 24px auto 1fr; gap: 14px; align-items: start; margin-top: 8px; }
+.giq-hm-ylabel { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 13px; color: var(--muted); align-self: center; }
+.giq-hm { display: grid; grid-template-columns: 22px repeat(5, 72px); grid-template-rows: repeat(5, 64px) 22px; gap: 6px; }
+.giq-hm-axis { display: grid; place-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.giq-hm-cell { border-radius: 8px; background: var(--band-bg); display: grid; place-items: center; color: var(--band-ink); }
+.giq-hm-cell small { font-size: 12px; opacity: .55; }
+.giq-hm-cell.has { background: var(--band); color: #FFFFFF; }
+.giq-hm-cell.med.has { color: #3F3710; }
+.giq-hm-cell b { font-size: 22px; font-weight: 600; }
+.giq-hm-xlabel { text-align: center; font-size: 13px; color: var(--muted); margin: 6px 0 0 28px; }
+.giq-hm-note { max-width: 42ch; padding-left: 24px; border-left: 1px solid var(--line); }
+.giq-hm-note h4 { font-size: 16px; font-weight: 600; color: var(--ink); margin: 0 0 8px; padding: 0; }
+.giq-hm-note p { font-size: 14px; color: var(--muted); line-height: 1.55; margin: 0 0 10px; }
+
+/* Wider trace on module pages, plus a pending state */
+.giq-trace-wide { max-width: 860px; margin-top: 8px; }
+.giq-node.is-pending .giq-dot { border-style: dashed; border-color: #5D739E; background: transparent; }
+.giq-node.is-pending .giq-title { color: #C9D3E3; }
+
+@media (max-width: 900px) {
+  .giq-hm-wrap { grid-template-columns: 18px 1fr; }
+  .giq-hm { grid-template-columns: 18px repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, 52px) 20px; gap: 4px; }
+  .giq-hm-note { grid-column: 1 / -1; padding-left: 0; border-left: 0; }
+}

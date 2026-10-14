@@ -11,16 +11,6 @@ from governiq.models import AISystem, Control, Framework, Requirement, Risk, Use
 from governiq.seed import seed
 
 
-@pytest.fixture
-def session(tmp_path):
-    """A fresh, seeded database in a temporary folder for each test."""
-    engine = make_engine(f"sqlite:///{tmp_path / 'test.db'}")
-    create_tables(engine)
-    with make_session_factory(engine)() as db:
-        seed(db)
-        yield db
-
-
 def count(session, model) -> int:
     return session.scalar(select(func.count()).select_from(model))
 

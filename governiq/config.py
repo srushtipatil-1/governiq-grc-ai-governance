@@ -21,3 +21,17 @@ MODULES = [
     ("Model Risk & GenAI Assurance", "Phase 9-10"),
     ("Dashboards & Audit Pack", "Phase 12"),
 ]
+
+# Modules that are built, tested and clickable in the app.
+LIVE_MODULES = {"Risk Register"}
+
+# Short display names for framework codes.
+FRAMEWORK_LABELS = {
+    "ISO27001": "ISO 27001",
+    "NISTCSF": "NIST CSF",
+    "DPDP": "DPDP",
+    "ISO42001": "ISO 42001",
+    "NISTAIRMF": "NIST AI RMF",
+    "RBIFREEAI": "RBI FREE-AI",
+    "OWASPLLM": "OWASP LLM",
+}
