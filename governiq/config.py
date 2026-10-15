@@ -23,7 +23,7 @@ MODULES = [
 ]
 
 # Modules that are built, tested and clickable in the app.
-LIVE_MODULES = {"Risk Register"}
+LIVE_MODULES = {"Risk Register", "Controls & Framework Mapping"}
 
 # Short display names for framework codes.
 FRAMEWORK_LABELS = {

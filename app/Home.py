@@ -23,7 +23,10 @@ home = st.Page("views/home.py", title="Home", icon=":material/home:", default=Tr
 risk_register = st.Page(
     "views/risk_register.py", title="Risk register", icon=":material/report:", url_path="risks"
 )
-page = st.navigation([home, risk_register], position="hidden")
+controls = st.Page(
+    "views/controls.py", title="Controls & mapping", icon=":material/fact_check:", url_path="controls"
+)
+page = st.navigation([home, risk_register, controls], position="hidden")
 
 with st.sidebar:
     st.html(
@@ -32,6 +35,7 @@ with st.sidebar:
     )
     st.page_link(home)
     st.page_link(risk_register)
+    st.page_link(controls)
     planned = "".join(
         f'<div class="giq-side-item">{escape(name)}<span>{escape(phase)}</span></div>'
         for name, phase in MODULES

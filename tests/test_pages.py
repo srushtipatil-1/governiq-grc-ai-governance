@@ -46,3 +46,27 @@ def test_form_explains_why_a_risk_is_rejected(db_url):
     [b for b in at.button if b.label == "Add risk"][0].click().run(timeout=30)
     assert "Risk not added" in at.error[0].value
     assert "Title must be between 10 and 200 characters" in at.error[0].value
+
+
+def _open(page: str) -> AppTest:
+    at = AppTest.from_file(HOME).run(timeout=30)
+    return at.switch_page(page).run(timeout=30)
+
+
+def test_controls_page_shows_library_coverage_and_rcm(db_url):
+    at = _open("views/controls.py")
+    assert not at.exception
+    assert [tab.label for tab in at.tabs] == [
+        "Control library",
+        "Framework coverage",
+        "Crosswalk",
+        "Risk & control matrix",
+    ]
+    assert len(at.dataframe[0].value) == 33  # control library
+    assert "13 requirements with no control yet" in " ".join(m.value for m in at.markdown)
+
+
+def test_framework_filter_narrows_the_control_library(db_url):
+    at = _open("views/controls.py")
+    [m for m in at.multiselect if m.label == "Framework"][0].select("OWASP LLM").run(timeout=30)
+    assert set(at.dataframe[0].value["Code"]) == {"CTL-AI-09", "CTL-AI-10"}
