@@ -11,7 +11,7 @@ HOME = Path(__file__).resolve().parent.parent / "app" / "Home.py"
 
 
 def test_version_is_set():
-    assert governiq.__version__ == "0.11.0"
+    assert governiq.__version__ == "1.0.0"
 
 
 def test_disclaimer_rules_out_compliance_claims():

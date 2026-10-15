@@ -1,6 +1,6 @@
 [project]
 name = "governiq"
-version = "0.11.0"
+version = "1.0.0"
 description = "Integrated GRC and AI governance platform (educational portfolio project)"
 requires-python = ">=3.11"
 
