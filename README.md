@@ -8,7 +8,7 @@ for a fictional Indian digital lender.
 ![Tests](https://img.shields.io/badge/tests-238%20passing-1F7A6E)
 ![Data](https://img.shields.io/badge/data-synthetic%20only-E8A33D)
 
-**Live demo:** LIVE_URL (one-click demo roles on the sign-in page; the demo resets on restart)
+**Live demo:** https://governiq-grc-srushti.streamlit.app (one-click demo roles on the sign-in page; the demo resets on restart)
 
 ![GovernIQ home page with the audit trace](docs/screenshots/00-home.png)
 
