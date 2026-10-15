@@ -7,8 +7,14 @@ from streamlit.testing.v1 import AppTest
 HOME = str(Path(__file__).resolve().parent.parent / "app" / "Home.py")
 
 
+def _signed_in(username: str = "priya.analyst") -> AppTest:
+    at = AppTest.from_file(HOME)
+    at.session_state["auth_user"] = username
+    return at.run(timeout=30)
+
+
 def _open_risk_register() -> AppTest:
-    at = AppTest.from_file(HOME).run(timeout=30)
+    at = _signed_in()
     return at.switch_page("views/risk_register.py").run(timeout=30)
 
 
@@ -48,8 +54,8 @@ def test_form_explains_why_a_risk_is_rejected(db_url):
     assert "Title must be between 10 and 200 characters" in at.error[0].value
 
 
-def _open(page: str) -> AppTest:
-    at = AppTest.from_file(HOME).run(timeout=30)
+def _open(page: str, username: str = "priya.analyst") -> AppTest:
+    at = _signed_in(username)
     return at.switch_page(page).run(timeout=30)
 
 
@@ -88,7 +94,7 @@ def test_assurance_page_shows_tests_and_findings(db_url):
 
 def test_auditor_is_told_they_cannot_record_tests(db_url):
     at = AppTest.from_file(HOME)
-    at.session_state["actor"] = "arjun.audit"
+    at.session_state["auth_user"] = "arjun.audit"
     at.run(timeout=30)
     at.switch_page("views/assurance.py").run(timeout=30)
     assert "Only a GRC Analyst" in at.info[0].value
@@ -148,7 +154,7 @@ def test_lifecycle_page_shows_gates_cards_and_reviews(db_url):
 
 def test_blocked_go_live_explains_why(db_url):
     at = AppTest.from_file(HOME)
-    at.session_state["actor"] = "meera.aigov"
+    at.session_state["auth_user"] = "meera.aigov"
     at.run(timeout=30)
     at.switch_page("views/lifecycle.py").run(timeout=30)
     [b for b in at.button if b.label.startswith("Move Sahayak")][0].click().run(timeout=30)
@@ -163,3 +169,68 @@ def test_model_risk_page_shows_failing_fairness_check(db_url):
     assert "6 of 7 checks pass" in body and "Approval rate ratio by gender" in body
     [b for b in at.button if b.label == "Record validation run"][0].click().run(timeout=30)
     assert "Recorded MV-001: Fail" in at.success[0].value
+
+
+def test_genai_page_runs_suite_both_ways(db_url):
+    at = _open("views/genai.py")
+    assert not at.exception
+    assert [tab.label for tab in at.tabs] == [
+        "Red-team suite",
+        "Try a prompt",
+        "OWASP coverage",
+        "Guardrails",
+    ]
+    assert "16 of 16 cases pass with guardrails on" in at.success[0].value
+    at.toggle[0].set_value(False).run(timeout=30)
+    assert "2 of 16 cases pass with guardrails off" in at.error[0].value
+
+
+def test_signed_out_visitors_only_see_the_sign_in_page(db_url):
+    at = AppTest.from_file(HOME).run(timeout=30)
+    assert not at.exception
+    assert [b.label for b in at.button if b.label.startswith("Priya")] == ["Priya Deshmukh, GRC Analyst"]
+    assert not at.tabs  # no module content is rendered
+
+
+def test_wrong_password_shows_a_generic_error(db_url):
+    at = AppTest.from_file(HOME).run(timeout=30)
+    at.text_input[0].input("priya.analyst")
+    at.text_input[1].input("not-the-password-1")
+    [b for b in at.button if b.label == "Sign in"][0].click().run(timeout=30)
+    assert at.error[0].value == "Wrong username or password."
+    assert "auth_user" not in at.session_state
+
+
+def test_demo_role_button_signs_in(db_url):
+    at = AppTest.from_file(HOME).run(timeout=30)
+    [b for b in at.button if b.label.startswith("Arjun Rao")][0].click().run(timeout=30)
+    assert at.session_state["auth_user"] == "arjun.audit"
+
+
+def test_audit_page_verifies_the_chain_for_auditors(db_url):
+    at = _open("views/admin.py", "arjun.audit")
+    assert not at.exception
+    assert "Chain verified" in at.success[0].value
+    assert "Only an Admin" in at.info[0].value
+
+
+def test_control_owner_has_no_audit_page(db_url):
+    at = _signed_in("vikram.eng")
+    assert "Audit trail & users" not in [link.label for link in at.get("page_link")]
+
+
+def test_switching_demo_user_signs_in_as_them_and_is_logged(db_url, session):
+    at = _signed_in("priya.analyst")
+    at.selectbox(key="demo_switch").select("meera.aigov").run(timeout=30)
+    assert at.session_state["auth_user"] == "meera.aigov"
+    from governiq.models import AuditLog
+
+    last_two = session.query(AuditLog.username, AuditLog.action).order_by(AuditLog.id.desc()).limit(2).all()
+    assert last_two == [("meera.aigov", "login"), ("priya.analyst", "logout")]
+
+
+def test_sign_out_returns_to_the_sign_in_page(db_url):
+    at = _signed_in("priya.analyst")
+    [b for b in at.button if b.label == "Sign out"][0].click().run(timeout=30)
+    assert "auth_user" not in at.session_state
+    assert any(b.label == "Sign in" for b in at.button)

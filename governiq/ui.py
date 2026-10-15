@@ -46,9 +46,17 @@ def get_session() -> Session:
     return make_session_factory(_engine(database_url()))()
 
 
-DEFAULT_ACTOR = "priya.analyst"
+def current_actor() -> str | None:
+    """Username of the signed-in user, or None when signed out. Set only by the sign-in page."""
+    return st.session_state.get("auth_user")
 
 
-def current_actor() -> str:
-    """The demo user the visitor is acting as. Real login with passwords arrives in Phase 11."""
-    return st.session_state.get("actor", DEFAULT_ACTOR)
+def current_user() -> User | None:
+    username = current_actor()
+    if username is None:
+        return None
+    with get_session() as session:
+        user = session.scalar(select(User).where(User.username == username, User.is_active))
+        if user is not None:
+            session.expunge(user)
+        return user

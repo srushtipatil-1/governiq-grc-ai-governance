@@ -1,6 +1,10 @@
 """Shared test fixtures: every test gets its own fresh, seeded database."""
 
+import os
+
 import pytest
+
+os.environ.setdefault("GOVERNIQ_SCRYPT_N", "1024")  # cheaper password hashing so seeding stays fast
 
 from governiq.db import create_tables, make_engine, make_session_factory
 from governiq.seed import seed

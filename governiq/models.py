@@ -4,7 +4,10 @@ The shared spine: risks link to controls, controls map to framework requirements
 Cyber, privacy, vendor and AI records all attach to the same spine.
 """
 
-from datetime import date, datetime
+import hashlib
+import itertools
+import json
+from datetime import UTC, date, datetime
 
 from sqlalchemy import (
     Boolean,
@@ -18,9 +21,11 @@ from sqlalchemy import (
     Table,
     Text,
     UniqueConstraint,
+    event,
     func,
+    select,
 )
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
 
 from governiq.db import Base
 
@@ -37,12 +42,16 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(100))
     role: Mapped[str] = mapped_column(String(30))
     department: Mapped[str] = mapped_column(String(50))
-    password_hash: Mapped[str | None] = mapped_column(String(200))  # filled in Phase 11
+    password_hash: Mapped[str | None] = mapped_column(String(200))  # scrypt, see governiq.auth
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    failed_logins: Mapped[int] = mapped_column(Integer, default=0)
+    locked_until: Mapped[datetime | None] = mapped_column(DateTime)
+    last_login: Mapped[datetime | None] = mapped_column(DateTime)
 
 
 class AuditLog(Base):
-    """Every change in GovernIQ. Hash-chaining is added in Phase 11."""
+    """Every change in GovernIQ. Each entry carries the hash of the one before it (a hash chain), so
+    editing or deleting any past entry breaks the chain and governiq.audit.verify_chain reports where."""
 
     __tablename__ = "audit_log"
 
@@ -56,6 +65,45 @@ class AuditLog(Base):
     after_json: Mapped[str | None] = mapped_column(Text)
     prev_hash: Mapped[str | None] = mapped_column(String(64))
     entry_hash: Mapped[str | None] = mapped_column(String(64))
+
+
+GENESIS_HASH = "0" * 64
+_audit_order = itertools.count()
+
+
+def audit_entry_hash(entry: "AuditLog") -> str:
+    """SHA-256 over the previous hash and every field of the entry, in a fixed order."""
+    payload = [
+        entry.prev_hash,
+        entry.ts.isoformat(timespec="microseconds"),
+        entry.username,
+        entry.action,
+        entry.entity,
+        entry.entity_id,
+        entry.before_json,
+        entry.after_json,
+    ]
+    return hashlib.sha256(json.dumps(payload, ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+@event.listens_for(AuditLog, "init")
+def _remember_order(target, args, kwargs):
+    target._order = next(_audit_order)  # sets are unordered, so remember the order entries were created
+
+
+@event.listens_for(Session, "before_flush")
+def _chain_new_audit_entries(session, flush_context, instances):
+    new = sorted((o for o in session.new if isinstance(o, AuditLog)), key=lambda o: getattr(o, "_order", 0))
+    if not new:
+        return
+    with session.no_autoflush:
+        previous = session.scalar(select(AuditLog.entry_hash).order_by(AuditLog.id.desc()).limit(1))
+    previous = previous or GENESIS_HASH
+    for entry in new:
+        entry.ts = entry.ts or datetime.now(UTC).replace(tzinfo=None)
+        entry.prev_hash = previous
+        entry.entry_hash = audit_entry_hash(entry)
+        previous = entry.entry_hash
 
 
 # ---------------------------------------------------------------- Frameworks

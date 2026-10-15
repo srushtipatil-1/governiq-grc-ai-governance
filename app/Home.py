@@ -14,9 +14,11 @@ import streamlit as st  # noqa: E402
 from sqlalchemy import select  # noqa: E402
 
 from governiq import __version__  # noqa: E402
+from governiq.auth import DEMO_PASSWORD, authenticate, can, demo_mode, record_logout  # noqa: E402
 from governiq.config import APP_NAME, LIVE_MODULES, MODULES  # noqa: E402
 from governiq.models import User  # noqa: E402
-from governiq.ui import DEFAULT_ACTOR, LOGO_DATA_URI, get_session, load_css  # noqa: E402
+from governiq.sign_in import render_sign_in  # noqa: E402
+from governiq.ui import LOGO_DATA_URI, current_user, get_session, load_css  # noqa: E402
 
 st.set_page_config(page_title=APP_NAME, page_icon=":material/link:", layout="wide")
 load_css()
@@ -40,40 +42,74 @@ lifecycle = st.Page(
 model_risk = st.Page(
     "views/model_risk.py", title="Model risk", icon=":material/query_stats:", url_path="model-risk"
 )
-page = st.navigation(
-    [home, risk_register, controls, assurance, ai_governance, lifecycle, model_risk], position="hidden"
+genai = st.Page("views/genai.py", title="GenAI assurance", icon=":material/smart_toy:", url_path="genai")
+audit = st.Page(
+    "views/admin.py", title="Audit trail & users", icon=":material/shield_lock:", url_path="audit"
 )
+modules = [home, risk_register, controls, assurance, ai_governance, lifecycle, model_risk, genai]
+
+user = current_user()
+if user is None:
+    # Signed out: every URL still resolves (so deep links work after sign-in), but only the sign-in page runs.
+    st.html(
+        "<style>section[data-testid='stSidebar'], [data-testid='stSidebarCollapsedControl'] "
+        "{display: none}</style>"
+    )
+    st.navigation([*modules, audit], position="hidden")  # resolves the URL; the page itself is not run
+    render_sign_in()
+    st.stop()
+
+pages = list(modules)
+if can(user.role, "verify_audit_trail"):
+    pages.append(audit)
+page = st.navigation(pages, position="hidden")
+
+
+def _sign_out() -> None:
+    with get_session() as session:
+        record_logout(session, st.session_state.pop("auth_user"))
+
+
+def _switch_demo_user() -> None:
+    target = st.session_state["demo_switch"]
+    with get_session() as session:
+        record_logout(session, st.session_state["auth_user"])
+        st.session_state["auth_user"] = authenticate(session, target, DEMO_PASSWORD).username
+
 
 with st.sidebar:
     st.html(
         f'<div class="giq-brand"><img src="{LOGO_DATA_URI}" width="32" height="32" alt="">'
         f"<b>{APP_NAME}</b></div>"
     )
-    st.page_link(home)
-    st.page_link(risk_register)
-    st.page_link(controls)
-    st.page_link(assurance)
-    st.page_link(ai_governance)
-    st.page_link(lifecycle)
-    st.page_link(model_risk)
+    for item in pages:
+        st.page_link(item)
     planned = "".join(
         f'<div class="giq-side-item">{escape(name)}<span>{escape(phase)}</span></div>'
         for name, phase in MODULES
         if name not in LIVE_MODULES
     )
-    st.html(f'<div class="giq-side-label">Coming next</div>{planned}')
-    with get_session() as session:
-        people = session.scalars(select(User).order_by(User.role, User.full_name)).all()
-        labels = {u.username: f"{u.full_name}, {u.role}" for u in people}
-    st.html('<div class="giq-side-label">Acting as (demo, no password until Phase 11)</div>')
-    st.selectbox(
-        "Acting as",
-        list(labels),
-        index=list(labels).index(st.session_state.get("actor", DEFAULT_ACTOR)),
-        format_func=labels.get,
-        key="actor",
-        label_visibility="collapsed",
+    if planned:
+        st.html(f'<div class="giq-side-label">Coming next</div>{planned}')
+    st.html(
+        f'<div class="giq-side-label">Signed in</div><div class="giq-user"><b>{escape(user.full_name)}</b>'
+        f"<span>{escape(user.role)}, {escape(user.department)}</span></div>"
     )
+    if demo_mode():
+        with get_session() as session:
+            people = session.scalars(
+                select(User).where(User.is_active).order_by(User.role, User.full_name)
+            ).all()
+            labels = {u.username: f"{u.full_name}, {u.role}" for u in people}
+        st.selectbox(
+            "Switch demo user",
+            list(labels),
+            index=list(labels).index(user.username),
+            format_func=labels.get,
+            key="demo_switch",
+            on_change=_switch_demo_user,
+        )
+    st.button("Sign out", icon=":material/logout:", on_click=_sign_out, width="stretch")
     st.html(f'<div class="giq-side-label">Version {__version__}, synthetic data only</div>')
 
 page.run()

@@ -11,7 +11,7 @@ HOME = Path(__file__).resolve().parent.parent / "app" / "Home.py"
 
 
 def test_version_is_set():
-    assert governiq.__version__ == "0.7.0"
+    assert governiq.__version__ == "0.9.0"
 
 
 def test_disclaimer_rules_out_compliance_claims():
@@ -22,8 +22,10 @@ def test_eight_modules_planned():
     assert len(MODULES) == 8
 
 
-def test_home_page_renders_without_errors():
-    at = AppTest.from_file(str(HOME)).run(timeout=30)
+def test_home_page_renders_without_errors(db_url):
+    at = AppTest.from_file(str(HOME))
+    at.session_state["auth_user"] = "priya.analyst"
+    at.run(timeout=30)
     assert not at.exception
     page_html = " ".join(element.proto.body for element in at.get("html"))
     assert "GovernIQ" in page_html

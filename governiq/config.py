@@ -33,6 +33,7 @@ LIVE_MODULES = {
     "AI Governance",
     "AI Lifecycle & Model Cards",
     "Model Risk Validation",
+    "GenAI Assurance",
 }
 
 # Short display names for framework codes.

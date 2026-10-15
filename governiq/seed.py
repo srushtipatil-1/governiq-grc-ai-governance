@@ -7,6 +7,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from governiq.ai_governance import apply_classification
+from governiq.auth import DEMO_PASSWORD, hash_password
 from governiq.config import DATA_DIR
 from governiq.models import AISystem, Asset, Control, Framework, Requirement, Risk, User, Vendor
 
@@ -31,7 +32,10 @@ def _lookup(table: dict, key: str, what: str):
 
 def seed(session: Session, seed_dir: Path = SEED_DIR) -> dict[str, int]:
     """Insert all seed data. Returns how many records of each kind were created."""
-    users = {r["username"]: User(**r) for r in _rows("users", seed_dir)}
+    # Every demo account gets its own salted hash of the published demo password (see governiq.auth).
+    users = {
+        r["username"]: User(**r, password_hash=hash_password(DEMO_PASSWORD)) for r in _rows("users", seed_dir)
+    }
     session.add_all(users.values())
 
     assets = {}
