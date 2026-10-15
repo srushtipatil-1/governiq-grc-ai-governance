@@ -226,7 +226,7 @@ def test_switching_demo_user_signs_in_as_them_and_is_logged(db_url, session):
     from governiq.models import AuditLog
 
     last_two = session.query(AuditLog.username, AuditLog.action).order_by(AuditLog.id.desc()).limit(2).all()
-    assert last_two == [("meera.aigov", "login"), ("priya.analyst", "logout")]
+    assert last_two == [("meera.aigov", "demo_login"), ("priya.analyst", "logout")]
 
 
 def test_sign_out_returns_to_the_sign_in_page(db_url):
@@ -250,3 +250,10 @@ def test_dashboard_shows_tiles_kris_and_downloads(db_url):
     labels = [d.proto.label for d in at.get("download_button")]
     assert "Download committee pack (PDF)" in labels
     assert any(label.startswith("Download audit pack (ZIP") for label in labels)
+
+
+def test_admin_can_reset_the_public_demo(db_url):
+    at = _open("views/admin.py", "admin.demo")
+    [b for b in at.button if b.label == "Reset demo data"][0].click().run(timeout=60)
+    assert not at.exception
+    assert "Demo data rebuilt" in at.success[0].value

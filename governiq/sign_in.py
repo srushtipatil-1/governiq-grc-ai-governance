@@ -7,7 +7,7 @@ from html import escape
 import streamlit as st
 from sqlalchemy import select
 
-from governiq.auth import DEMO_PASSWORD, authenticate, demo_mode
+from governiq.auth import DEMO_PASSWORD, authenticate, demo_mode, demo_sign_in
 from governiq.config import APP_NAME, DISCLAIMER
 from governiq.models import User
 from governiq.ui import LOGO_DATA_URI, get_session
@@ -24,9 +24,13 @@ DEMO_ACCOUNTS = (
 def render_sign_in() -> None:
     session = get_session()
 
-    def _sign_in(username: str, password: str) -> None:
+    def _sign_in(username: str, password: str | None) -> None:
         try:
-            user = authenticate(session, username, password)
+            user = (
+                demo_sign_in(session, username)
+                if password is None
+                else authenticate(session, username, password)
+            )
         except ValueError as problem:
             st.session_state["login_error"] = str(problem)
         else:
@@ -69,7 +73,8 @@ def render_sign_in() -> None:
             names = {u.username: u for u in session.scalars(select(User))}
             st.markdown("**Try a demo role**")
             st.caption(
-                f"All demo accounts use the password `{DEMO_PASSWORD}`. Five wrong attempts lock an account."
+                f"Demo password for the form: `{DEMO_PASSWORD}`. Five wrong attempts in the form lock an "
+                "account; these one-click buttons always work so the public demo stays usable."
             )
             for username, what in DEMO_ACCOUNTS:
                 account = names.get(username)
@@ -81,7 +86,7 @@ def render_sign_in() -> None:
                     help=escape(what),
                     width="stretch",
                 ):
-                    _sign_in(username, DEMO_PASSWORD)
+                    _sign_in(username, None)
                     st.rerun()
 
     st.caption(DISCLAIMER)

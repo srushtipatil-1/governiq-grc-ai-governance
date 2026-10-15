@@ -10,9 +10,8 @@ from sqlalchemy.orm import Session
 
 from governiq.config import PROJECT_ROOT
 from governiq.db import create_tables, database_url, make_engine, make_session_factory
+from governiq.demo import rebuild_demo_data
 from governiq.models import User
-from governiq.seed import seed
-from governiq.seed_assurance import seed_assurance
 
 CSS_FILE = PROJECT_ROOT / "app" / "assets" / "style.css"
 
@@ -36,10 +35,14 @@ def _engine(url: str) -> Engine:
     engine = make_engine(url)
     create_tables(engine)
     with make_session_factory(engine)() as session:
-        if session.scalar(select(func.count()).select_from(User)) == 0:
-            seed(session)  # first run anywhere (e.g. a fresh cloud deployment) gets the demo data
-            seed_assurance(session)
+        empty = session.scalar(select(func.count()).select_from(User)) == 0
+    if empty:
+        rebuild_demo_data(engine)  # first run anywhere (e.g. a fresh cloud deployment) gets the demo data
     return engine
+
+
+def demo_engine() -> Engine:
+    return _engine(database_url())
 
 
 def get_session() -> Session:

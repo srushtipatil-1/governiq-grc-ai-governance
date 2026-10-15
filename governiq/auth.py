@@ -98,6 +98,20 @@ def authenticate(session: Session, username: str, password: str, now: datetime |
     return user
 
 
+def demo_sign_in(session: Session, username: str) -> User:
+    """One-click demo sign-in. Only in demo mode, and it skips the lockout on purpose, so a visitor who
+    types wrong passwords cannot lock everyone else out of the public demo. Logged as 'demo_login'."""
+    if not demo_mode():
+        raise ValueError("Demo sign-in is switched off.")
+    user = session.scalar(select(User).where(User.username == username, User.is_active))
+    if user is None:
+        raise ValueError(GENERIC_LOGIN_ERROR)
+    user.last_login = _now()
+    _log(session, user.username, "demo_login")
+    session.commit()
+    return user
+
+
 def record_logout(session: Session, username: str) -> None:
     _log(session, username, "logout")
     session.commit()

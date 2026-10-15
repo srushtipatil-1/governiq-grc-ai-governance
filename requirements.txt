@@ -1,6 +1,5 @@
+# Runtime dependencies (what Streamlit Community Cloud and the Docker image install).
 streamlit>=1.40,<2
 sqlalchemy>=2.0,<3
 openpyxl>=3.1,<4
 reportlab>=4.4,<6
-pytest>=8
-ruff>=0.6

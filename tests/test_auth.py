@@ -153,3 +153,38 @@ def test_audit_export_contains_hashes(session):
     rows = audit_csv(session).decode().splitlines()
     assert rows[0].endswith("prev_hash,entry_hash")
     assert rows[1].split(",")[-2] == "0" * 64  # the first entry points at the genesis hash
+
+
+# ---------------------------------------------------------------- public demo safeguards
+def test_demo_buttons_still_work_when_an_account_is_locked(session):
+    from governiq.auth import demo_sign_in
+
+    for _ in range(5):
+        with pytest.raises(ValueError):
+            authenticate(session, "admin.demo", "wrong-password-1")
+    with pytest.raises(ValueError, match="locked"):
+        authenticate(session, "admin.demo", DEMO_PASSWORD)
+    assert demo_sign_in(session, "admin.demo").username == "admin.demo"
+    assert session.scalar(select(AuditLog).order_by(AuditLog.id.desc())).action == "demo_login"
+
+
+def test_demo_sign_in_is_off_outside_demo_mode(session, monkeypatch):
+    from governiq.auth import demo_sign_in
+
+    monkeypatch.setenv("GOVERNIQ_DEMO_MODE", "false")
+    with pytest.raises(ValueError, match="switched off"):
+        demo_sign_in(session, "priya.analyst")
+
+
+def test_rebuild_demo_data_restores_the_seed(db_url, session):
+    from governiq.db import make_engine
+    from governiq.demo import rebuild_demo_data
+
+    set_password(session, "neha.hr", "changed-pass-2026", "admin.demo")
+    counts = rebuild_demo_data(make_engine(db_url))
+    session.expire_all()
+    assert counts["risks"] == 30
+    assert verify_password(
+        DEMO_PASSWORD, session.scalar(select(User).where(User.username == "neha.hr")).password_hash
+    )
+    assert verify_chain(session).ok

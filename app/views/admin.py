@@ -5,9 +5,10 @@ import streamlit as st
 from sqlalchemy import select
 
 from governiq.audit import audit_csv, load_audit, verify_chain
-from governiq.auth import PERMISSION_LABELS, PERMISSIONS, can, set_password, unlock_user
-from governiq.models import ROLES, User
-from governiq.ui import current_actor, get_session
+from governiq.auth import PERMISSION_LABELS, PERMISSIONS, can, demo_mode, set_password, unlock_user
+from governiq.demo import rebuild_demo_data
+from governiq.models import ROLES, AuditLog, User
+from governiq.ui import current_actor, demo_engine, get_session
 
 session = get_session()
 actor = session.scalar(select(User).where(User.username == current_actor()))
@@ -117,6 +118,25 @@ with users_tab:
             if st.button("Unlock", disabled=target.locked_until is None and target.failed_logins == 0):
                 unlock_user(session, target.username, actor.username)
                 st.session_state["admin_flash"] = ("ok", f"{target.username} unlocked.")
+                st.rerun()
+
+    if can(actor.role, "manage_users") and demo_mode():
+        with st.container(border=True):
+            st.markdown("**Reset the public demo**")
+            st.caption(
+                "Rebuilds every table from the seed data and clears uploaded evidence. Use it when visitors "
+                "have changed the demo. The audit trail starts a new chain."
+            )
+            if st.button("Reset demo data", icon=":material/restart_alt:"):
+                rebuild_demo_data(demo_engine())
+                with get_session() as fresh:
+                    fresh.add(
+                        AuditLog(
+                            username=actor.username, action="demo_reset", entity="database", entity_id="all"
+                        )
+                    )
+                    fresh.commit()
+                st.session_state["admin_flash"] = ("ok", "Demo data rebuilt from the seed files.")
                 st.rerun()
 
 # ---------- Permissions ----------

@@ -14,7 +14,7 @@ import streamlit as st  # noqa: E402
 from sqlalchemy import select  # noqa: E402
 
 from governiq import __version__  # noqa: E402
-from governiq.auth import DEMO_PASSWORD, authenticate, can, demo_mode, record_logout  # noqa: E402
+from governiq.auth import can, demo_mode, demo_sign_in, record_logout  # noqa: E402
 from governiq.config import APP_NAME, LIVE_MODULES, MODULES  # noqa: E402
 from governiq.models import User  # noqa: E402
 from governiq.sign_in import render_sign_in  # noqa: E402
@@ -77,7 +77,7 @@ def _switch_demo_user() -> None:
     target = st.session_state["demo_switch"]
     with get_session() as session:
         record_logout(session, st.session_state["auth_user"])
-        st.session_state["auth_user"] = authenticate(session, target, DEMO_PASSWORD).username
+        st.session_state["auth_user"] = demo_sign_in(session, target).username
 
 
 with st.sidebar:
