@@ -413,3 +413,23 @@ class PostImplementationReview(Base):
 
     ai_system: Mapped[AISystem] = relationship()
     reviewer: Mapped[User] = relationship()
+
+
+# ---------------------------------------------------------------- Model risk
+class ModelValidation(Base):
+    """An independent validation run: performance, fairness and drift metrics, recorded as control tests."""
+
+    __tablename__ = "model_validations"
+    __table_args__ = (CheckConstraint("result IN ('Pass', 'Fail')", name="ck_mv_result"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True)
+    ai_system_id: Mapped[int] = mapped_column(ForeignKey("ai_systems.id"))
+    validator_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    run_on: Mapped[date] = mapped_column(Date)
+    result: Mapped[str] = mapped_column(String(10))
+    metrics_json: Mapped[str] = mapped_column(Text)
+    test_codes: Mapped[str] = mapped_column(String(100))
+
+    ai_system: Mapped[AISystem] = relationship()
+    validator: Mapped[User] = relationship()

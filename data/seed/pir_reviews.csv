@@ -1,2 +1,2 @@
 system,reviewer,reviewed_on,outcome,notes
-AI-01,priya.analyst,2026-05-05,Improve,"Six-month review: accuracy stable (AUC 0.82), override rate 7%. Fairness by gender slipping; retest scheduled."
+AI-01,priya.analyst,2026-05-05,Improve,"Six-month review: accuracy stable (AUC 0.80), override rate 7%. Fairness by gender slipping; retest scheduled."

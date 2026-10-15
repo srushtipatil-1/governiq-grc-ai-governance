@@ -153,3 +153,13 @@ def test_blocked_go_live_explains_why(db_url):
     at.switch_page("views/lifecycle.py").run(timeout=30)
     [b for b in at.button if b.label.startswith("Move Sahayak")][0].click().run(timeout=30)
     assert "Sahayak cannot move to Deployed" in at.error[0].value
+
+
+def test_model_risk_page_shows_failing_fairness_check(db_url):
+    at = _open("views/model_risk.py")
+    assert not at.exception
+    assert [tab.label for tab in at.tabs] == ["Validation", "Fairness", "Drift", "History"]
+    body = " ".join(str(h.proto) for h in at.get("html"))
+    assert "6 of 7 checks pass" in body and "Approval rate ratio by gender" in body
+    [b for b in at.button if b.label == "Record validation run"][0].click().run(timeout=30)
+    assert "Recorded MV-001: Fail" in at.success[0].value

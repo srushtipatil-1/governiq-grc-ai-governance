@@ -20,7 +20,8 @@ MODULES = [
     ("Evidence, Findings & Actions", "Phase 6"),
     ("AI Governance", "Phase 7"),
     ("AI Lifecycle & Model Cards", "Phase 8"),
-    ("Model Risk & GenAI Assurance", "Phase 9-10"),
+    ("Model Risk Validation", "Phase 9"),
+    ("GenAI Assurance", "Phase 10"),
     ("Dashboards & Audit Pack", "Phase 12"),
 ]
 
@@ -31,6 +32,7 @@ LIVE_MODULES = {
     "Evidence, Findings & Actions",
     "AI Governance",
     "AI Lifecycle & Model Cards",
+    "Model Risk Validation",
 }
 
 # Short display names for framework codes.
