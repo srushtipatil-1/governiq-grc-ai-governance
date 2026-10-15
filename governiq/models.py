@@ -221,3 +221,103 @@ class Risk(Base):
     @property
     def inherent_score(self) -> int:
         return self.likelihood * self.impact
+
+
+# ---------------------------------------------------------------- Assurance: tests, evidence, findings
+class ControlTest(Base):
+    """One test of one control. The result is derived from the exceptions, never typed in."""
+
+    __tablename__ = "control_tests"
+    __table_args__ = (
+        CheckConstraint("test_type IN ('Design', 'Operating')", name="ck_test_type"),
+        CheckConstraint(
+            "method IN ('Inquiry', 'Inspection', 'Observation', 'Re-performance', 'Automated')",
+            name="ck_test_method",
+        ),
+        CheckConstraint("sample_size >= 1", name="ck_test_sample"),
+        CheckConstraint("exceptions BETWEEN 0 AND sample_size", name="ck_test_exceptions"),
+        CheckConstraint("result IN ('Effective', 'Ineffective')", name="ck_test_result"),
+        CheckConstraint(
+            "reviewer_id IS NULL OR reviewer_id != tester_id", name="ck_test_reviewer_not_tester"
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True)
+    control_id: Mapped[int] = mapped_column(ForeignKey("controls.id"))
+    test_type: Mapped[str] = mapped_column(String(20))
+    method: Mapped[str] = mapped_column(String(20))
+    period: Mapped[str] = mapped_column(String(20))
+    sample_size: Mapped[int] = mapped_column(Integer)
+    exceptions: Mapped[int] = mapped_column(Integer)
+    result: Mapped[str] = mapped_column(String(20))
+    tester_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    reviewer_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    performed_on: Mapped[date] = mapped_column(Date)
+    notes: Mapped[str] = mapped_column(Text, default="")
+
+    control: Mapped[Control] = relationship()
+    tester: Mapped[User] = relationship(foreign_keys=[tester_id])
+    reviewer: Mapped[User | None] = relationship(foreign_keys=[reviewer_id])
+    evidence: Mapped[list["Evidence"]] = relationship(back_populates="test")
+
+
+class Evidence(Base):
+    """A file supporting a test. The SHA-256 fingerprint proves it has not changed since upload."""
+
+    __tablename__ = "evidence"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True)
+    test_id: Mapped[int] = mapped_column(ForeignKey("control_tests.id"))
+    filename: Mapped[str] = mapped_column(String(200))  # the name the user uploaded
+    stored_name: Mapped[str] = mapped_column(String(80), unique=True)  # random name on disk
+    sha256: Mapped[str] = mapped_column(String(64))
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    uploaded_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    uploaded_on: Mapped[date] = mapped_column(Date)
+
+    test: Mapped[ControlTest] = relationship(back_populates="evidence")
+    uploaded_by: Mapped[User] = relationship()
+
+
+class Finding(Base):
+    __tablename__ = "findings"
+    __table_args__ = (
+        CheckConstraint("severity IN ('High', 'Medium', 'Low')", name="ck_finding_severity"),
+        CheckConstraint("status IN ('Open', 'Closed')", name="ck_finding_status"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True)
+    control_id: Mapped[int] = mapped_column(ForeignKey("controls.id"))
+    test_id: Mapped[int] = mapped_column(ForeignKey("control_tests.id"))
+    title: Mapped[str] = mapped_column(String(250))
+    severity: Mapped[str] = mapped_column(String(10))
+    status: Mapped[str] = mapped_column(String(10), default="Open")
+    raised_on: Mapped[date] = mapped_column(Date)
+    closed_on: Mapped[date | None] = mapped_column(Date)
+    closed_by_test_id: Mapped[int | None] = mapped_column(ForeignKey("control_tests.id"))
+
+    control: Mapped[Control] = relationship()
+    test: Mapped[ControlTest] = relationship(foreign_keys=[test_id])
+    actions: Mapped[list["Action"]] = relationship(back_populates="finding")
+
+
+class Action(Base):
+    """A corrective action that fixes a finding."""
+
+    __tablename__ = "actions"
+    __table_args__ = (CheckConstraint("status IN ('Open', 'Done')", name="ck_action_status"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True)
+    finding_id: Mapped[int] = mapped_column(ForeignKey("findings.id"))
+    description: Mapped[str] = mapped_column(String(300))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    due_date: Mapped[date] = mapped_column(Date)
+    status: Mapped[str] = mapped_column(String(10), default="Open")
+    completed_on: Mapped[date | None] = mapped_column(Date)
+
+    finding: Mapped[Finding] = relationship(back_populates="actions")
+    owner: Mapped[User] = relationship()

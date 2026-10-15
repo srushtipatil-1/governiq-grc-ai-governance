@@ -11,10 +11,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import streamlit as st  # noqa: E402
+from sqlalchemy import select  # noqa: E402
 
 from governiq import __version__  # noqa: E402
 from governiq.config import APP_NAME, LIVE_MODULES, MODULES  # noqa: E402
-from governiq.ui import LOGO_DATA_URI, load_css  # noqa: E402
+from governiq.models import User  # noqa: E402
+from governiq.ui import DEFAULT_ACTOR, LOGO_DATA_URI, get_session, load_css  # noqa: E402
 
 st.set_page_config(page_title=APP_NAME, page_icon=":material/link:", layout="wide")
 load_css()
@@ -26,7 +28,10 @@ risk_register = st.Page(
 controls = st.Page(
     "views/controls.py", title="Controls & mapping", icon=":material/fact_check:", url_path="controls"
 )
-page = st.navigation([home, risk_register, controls], position="hidden")
+assurance = st.Page(
+    "views/assurance.py", title="Testing & findings", icon=":material/verified:", url_path="assurance"
+)
+page = st.navigation([home, risk_register, controls, assurance], position="hidden")
 
 with st.sidebar:
     st.html(
@@ -36,12 +41,25 @@ with st.sidebar:
     st.page_link(home)
     st.page_link(risk_register)
     st.page_link(controls)
+    st.page_link(assurance)
     planned = "".join(
         f'<div class="giq-side-item">{escape(name)}<span>{escape(phase)}</span></div>'
         for name, phase in MODULES
         if name not in LIVE_MODULES
     )
     st.html(f'<div class="giq-side-label">Coming next</div>{planned}')
+    with get_session() as session:
+        people = session.scalars(select(User).order_by(User.role, User.full_name)).all()
+        labels = {u.username: f"{u.full_name}, {u.role}" for u in people}
+    st.html('<div class="giq-side-label">Acting as (demo, no password until Phase 11)</div>')
+    st.selectbox(
+        "Acting as",
+        list(labels),
+        index=list(labels).index(st.session_state.get("actor", DEFAULT_ACTOR)),
+        format_func=labels.get,
+        key="actor",
+        label_visibility="collapsed",
+    )
     st.html(f'<div class="giq-side-label">Version {__version__}, synthetic data only</div>')
 
 page.run()

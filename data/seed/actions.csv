@@ -1,0 +1,5 @@
+control,description,owner,due_date,status
+CTL-IAM-02,Disable the two leaver accounts and link HRMS exits to automatic account disable,rahul.itops,2026-11-15,Open
+CTL-OPS-02,Add an escalation when a critical patch passes 10 days without installation,rahul.itops,2026-10-31,Done
+CTL-AI-05,Make the fairness test report a mandatory gate in the CreditLens release pipeline,vikram.eng,2026-11-30,Open
+CTL-AI-09,Build an OWASP LLM test suite for Sahayak and run it before go-live,vikram.eng,2026-12-15,Open

@@ -1,0 +1,12 @@
+control,test_type,method,period,sample_size,exceptions,tester,reviewer,performed_on,notes
+CTL-GOV-01,Design,Inspection,2026-Q3,1,0,priya.analyst,meera.aigov,2026-09-08,Policy approved by the board on 12 Jun 2026 and published on the intranet.
+CTL-IAM-02,Operating,Inspection,2026-Q3,25,2,priya.analyst,kabir.ciso,2026-09-15,2 of 25 sampled leavers still had active LoanCore accounts 9 and 17 days after exit.
+CTL-IAM-03,Operating,Inspection,2026-Q3,2,0,priya.analyst,kabir.ciso,2026-09-16,Q1 and Q2 access reviews completed and signed off by system owners.
+CTL-IAM-04,Operating,Inspection,2026-Q3,1,0,priya.analyst,kabir.ciso,2026-09-17,Identity provider policy enforces MFA for VPN and admin consoles.
+CTL-OPS-01,Operating,Inspection,2026-Q3,20,0,priya.analyst,kabir.ciso,2026-09-18,20 daily backup jobs sampled; all succeeded; Q3 restore test passed.
+CTL-OPS-02,Operating,Inspection,2026-Q3,2,1,priya.analyst,kabir.ciso,2026-09-19,August patch cycle installed one critical patch 31 days after release.
+CTL-OPS-05,Operating,Inspection,2026-Q3,1,0,priya.analyst,kabir.ciso,2026-09-22,Storage and TLS configuration reviewed; encryption enabled.
+CTL-PRV-01,Operating,Inspection,2026-Q3,25,0,priya.analyst,kabir.ciso,2026-09-23,25 loan applications sampled; consent record present for each.
+CTL-TPR-01,Operating,Inspection,2026-Q3,2,0,meera.aigov,kabir.ciso,2026-09-24,Assessments for VeriKYC and CloudNimbus completed before renewal.
+CTL-AI-05,Operating,Re-performance,2026-Q3,1,1,priya.analyst,meera.aigov,2026-09-25,CreditLens v3.2 was released without the fairness test report.
+CTL-AI-09,Design,Inquiry,2026-Q3,1,1,meera.aigov,priya.analyst,2026-09-29,No prompt injection or data leakage test suite exists for Sahayak.

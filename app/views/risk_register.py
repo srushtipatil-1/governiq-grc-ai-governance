@@ -21,7 +21,7 @@ from governiq.risks import (
     rating_summary,
     risk_rows,
 )
-from governiq.ui import get_session
+from governiq.ui import current_actor, get_session
 
 RATING_CLASS = {"Critical": "crit", "High": "high", "Medium": "med", "Low": "low"}
 RATING_STYLE = {
@@ -213,7 +213,7 @@ with add_tab:
             control_codes=[c.code for c in linked],
         )
         try:
-            saved = create_risk(session, new, actor="demo.user")
+            saved = create_risk(session, new, actor=current_actor())
         except ValueError as problem:
             st.error(f"Risk not added. {problem}", icon=":material/error:")
         else:

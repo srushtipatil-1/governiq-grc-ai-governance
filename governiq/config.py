@@ -6,6 +6,7 @@ APP_NAME = "GovernIQ"
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 DB_PATH = DATA_DIR / "governiq.db"
+EVIDENCE_DIR = DATA_DIR / "evidence"  # uploaded evidence files; kept out of Git by .gitignore
 
 DISCLAIMER = (
     "Educational portfolio project using synthetic data. "
@@ -23,7 +24,7 @@ MODULES = [
 ]
 
 # Modules that are built, tested and clickable in the app.
-LIVE_MODULES = {"Risk Register", "Controls & Framework Mapping"}
+LIVE_MODULES = {"Risk Register", "Controls & Framework Mapping", "Evidence, Findings & Actions"}
 
 # Short display names for framework codes.
 FRAMEWORK_LABELS = {

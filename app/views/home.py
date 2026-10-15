@@ -21,7 +21,7 @@ st.html(
       </div>
 
       <div class="giq-trace" role="img" aria-label="Sample audit trace from risk to corrective action">
-        <div class="giq-trace-head"><h3>Audit trace</h3><span>Sample record</span></div>
+        <div class="giq-trace-head"><h3>Audit trace</h3><span>Record from the demo data</span></div>
 
         <div class="giq-node is-open">
           <div class="giq-dot"></div>
@@ -33,29 +33,30 @@ st.html(
         <div class="giq-node">
           <div class="giq-dot"></div>
           <div><div class="giq-kind">Control</div>
-            <div class="giq-title">Quarterly user access review</div>
-            <div class="giq-id">CTL-IAM-03 maps to ISO 27001 A.5.15, NIST CSF PR.AA-05</div></div>
+            <div class="giq-title">Leaver access removed within 24 hours</div>
+            <div class="giq-id">CTL-IAM-02 maps to ISO 27001 A.5.18, NIST CSF PR.AA-05,
+              DPDP S.8(5)</div></div>
           <span class="giq-chip plain">Key control</span>
         </div>
         <div class="giq-node is-fail">
           <div class="giq-dot"></div>
           <div><div class="giq-kind">Test</div>
             <div class="giq-title">2 of 25 sampled leavers still had access</div>
-            <div class="giq-id">TEST-2026-Q3-014</div></div>
+            <div class="giq-id">TST-002, operating test, 2026-Q3</div></div>
           <span class="giq-chip fail">Ineffective</span>
         </div>
         <div class="giq-node is-ok">
           <div class="giq-dot"></div>
           <div><div class="giq-kind">Evidence</div>
-            <div class="giq-title">access_review_q3.xlsx</div>
-            <div class="giq-id">sha256 9f2c41b7e3…a0e07a</div></div>
+            <div class="giq-title">CTL-IAM-02-2026-Q3-workpaper.txt</div>
+            <div class="giq-id">sha256 e6e5422ea4de…0051bfc</div></div>
           <span class="giq-chip ok">Hash verified</span>
         </div>
         <div class="giq-node is-open">
           <div class="giq-dot"></div>
-          <div><div class="giq-kind">Action</div>
-            <div class="giq-title">Revoke leavers' access, then retest</div>
-            <div class="giq-id">ACT-012, owner IT Operations</div></div>
+          <div><div class="giq-kind">Finding and action</div>
+            <div class="giq-title">Disable leaver accounts and automate HRMS exits</div>
+            <div class="giq-id">FND-001, ACT-001, owner IT Operations</div></div>
           <span class="giq-chip open">Due 15 Nov</span>
         </div>
       </div>

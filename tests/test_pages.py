@@ -70,3 +70,23 @@ def test_framework_filter_narrows_the_control_library(db_url):
     at = _open("views/controls.py")
     [m for m in at.multiselect if m.label == "Framework"][0].select("OWASP LLM").run(timeout=30)
     assert set(at.dataframe[0].value["Code"]) == {"CTL-AI-09", "CTL-AI-10"}
+
+
+def test_assurance_page_shows_tests_and_findings(db_url):
+    at = _open("views/assurance.py")
+    assert not at.exception
+    assert [tab.label for tab in at.tabs] == [
+        "Record a test",
+        "Test log and evidence",
+        "Findings and actions",
+        "Residual risk",
+    ]
+    assert len(at.dataframe[0].value) == 11
+
+
+def test_auditor_is_told_they_cannot_record_tests(db_url):
+    at = AppTest.from_file(HOME)
+    at.session_state["actor"] = "arjun.audit"
+    at.run(timeout=30)
+    at.switch_page("views/assurance.py").run(timeout=30)
+    assert "Only a GRC Analyst" in at.info[0].value

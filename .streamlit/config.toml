@@ -16,5 +16,9 @@ textColor = "#DCE3EE"
 primaryColor = "#E8A33D"
 borderColor = "#24396A"
 
+[server]
+# Evidence files are capped at 10 MB, matching the rule in governiq/assurance.py.
+maxUploadSize = 10
+
 [browser]
 gatherUsageStats = false
