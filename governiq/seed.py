@@ -6,6 +6,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
+from governiq.ai_governance import apply_classification
 from governiq.config import DATA_DIR
 from governiq.models import AISystem, Asset, Control, Framework, Requirement, Risk, User, Vendor
 
@@ -74,7 +75,11 @@ def seed(session: Session, seed_dir: Path = SEED_DIR) -> dict[str, int]:
             decides_on_individuals=_yes(r["decides_on_individuals"]),
             autonomy=r["autonomy"],
             lifecycle_stage=r["lifecycle_stage"],
+            domain=r["domain"],
+            interacts_with_people=_yes(r["interacts_with_people"]),
         )
+    for system in ai_systems.values():
+        apply_classification(system)  # tiers come from the same rules the app uses
     session.add_all(ai_systems.values())
 
     frameworks = {r["code"]: Framework(**r) for r in _rows("frameworks", seed_dir)}

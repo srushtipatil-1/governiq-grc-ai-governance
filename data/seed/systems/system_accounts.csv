@@ -1,0 +1,11 @@
+username,employee_id,system,status,privileged,mfa_enabled,last_access_review
+rohan.p,E1041,LoanCore,disabled,no,yes,2026-07-01
+kavya.n,E1077,LoanCore,disabled,no,yes,2026-07-01
+imran.q,E1102,LoanCore,active,no,yes,2026-07-01
+sneha.k,E1118,HRMS,disabled,no,yes,2026-07-01
+aditya.r,E1125,Cloud platform,disabled,yes,yes,2026-10-01
+rahul.k,E2001,Cloud platform,active,yes,yes,2026-10-01
+vikram.j,E2002,Cloud platform,active,yes,yes,2026-10-01
+dbadmin.svc,SVC01,LoanCore,active,yes,no,2026-10-01
+kabir.m,E2003,KYC Vault,active,yes,yes,2026-10-01
+anita.d,E2004,LoanCore,active,no,yes,2026-07-01

@@ -22,6 +22,7 @@ from governiq.assurance import (
     rerate_residual,
     verify_evidence,
 )
+from governiq.automation import CHECKS, EXPORTS_TAKEN_ON, run_check
 from governiq.controls import SAMPLE_SIZES
 from governiq.models import Control, User
 from governiq.risks import load_risks, rating_for
@@ -59,8 +60,8 @@ if "assurance_flash" in st.session_state:
     kind, message = st.session_state.pop("assurance_flash")
     (st.success if kind == "ok" else st.warning)(message, icon=":material/info:")
 
-record_tab, log_tab, findings_tab, residual_tab = st.tabs(
-    ["Record a test", "Test log and evidence", "Findings and actions", "Residual risk"]
+record_tab, auto_tab, log_tab, findings_tab, residual_tab = st.tabs(
+    ["Record a test", "Automated checks", "Test log and evidence", "Findings and actions", "Residual risk"]
 )
 
 # ---------- Record a test ----------
@@ -136,6 +137,63 @@ with record_tab:
                 message += f" {finding.code} stays open until all its actions are done."
             st.session_state["assurance_flash"] = ("ok", message)
             st.rerun()
+
+# ---------- Automated checks ----------
+with auto_tab:
+    st.markdown(
+        f"Continuous control monitoring: each check reads a synthetic system export (taken "
+        f"{EXPORTS_TAKEN_ON:%d %b %Y}), tests the **whole population** instead of a sample, and records the "
+        "result as an operating test with the exception list attached as evidence. A failed check opens "
+        "a finding; a passing re-run can close one."
+    )
+    st.dataframe(
+        pd.DataFrame(
+            [
+                {
+                    "Check": c.code,
+                    "What it looks for": c.name,
+                    "Control": c.control_code,
+                    "Data source": c.source,
+                }
+                for c in CHECKS
+            ]
+        ),
+        hide_index=True,
+        width="stretch",
+    )
+    chosen = st.multiselect(
+        "Checks to run",
+        [c.code for c in CHECKS],
+        default=[c.code for c in CHECKS],
+        format_func=lambda code: f"{code} {next(c.name for c in CHECKS if c.code == code)}",
+    )
+    if st.button("Run checks", type="primary", icon=":material/play_arrow:", disabled=not chosen):
+        results = []
+        for code in chosen:
+            try:
+                result, outcome = run_check(session, code, actor=actor.username)
+            except ValueError as problem:
+                st.error(f"{code} not run. {problem}", icon=":material/error:")
+                break
+            note = f"{outcome.test.code} {outcome.test.result}"
+            if outcome.opened:
+                note += f", opened {outcome.opened.code}"
+            note += "".join(f", closed {f.code}" for f in outcome.closed)
+            note += "".join(f", {f.code} stays open (actions pending)" for f in outcome.still_open)
+            results.append((code, result.population, result.exceptions, result.summary, note))
+        else:
+            st.session_state["ccm_results"] = results
+            st.rerun()
+    for code, population, exceptions, summary, note in st.session_state.get("ccm_results", []):
+        icon = ":material/check_circle:" if not exceptions else ":material/warning:"
+        with st.container(border=True):
+            st.markdown(
+                f"{icon} **{code}**: {population} checked, {len(exceptions)} "
+                f"exception{'' if len(exceptions) == 1 else 's'}. {note}."
+            )
+            st.caption(summary)
+            if exceptions:
+                st.dataframe(pd.DataFrame(exceptions), hide_index=True, width="stretch")
 
 # ---------- Test log and evidence ----------
 with log_tab:

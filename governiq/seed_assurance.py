@@ -10,6 +10,7 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from governiq.ai_governance import QUESTIONS, decide_assessment, submit_assessment
 from governiq.assurance import NewTest, record_test, rerate_residual
 from governiq.models import Action, Control, Finding, User
 from governiq.seed import SEED_DIR
@@ -72,7 +73,12 @@ def seed_assurance(session: Session, seed_dir: Path = SEED_DIR) -> dict[str, int
             int(row["residual_impact"]),
             row["rated_by"],
         )
+    # One approved AI assessment (CreditLens). TalentSift is left unassessed for the live demo.
+    answers = {q.id: "Not applicable" if q.allow_na else "Yes" for q in QUESTIONS}
+    submitted = submit_assessment(session, "AI-01", answers, actor="priya.analyst", today=date(2026, 10, 8))
+    decide_assessment(session, submitted.assessment.code, True, "Evidence reviewed.", actor="meera.aigov")
     return {
+        "ai_assessments": 1,
         "control_tests": len(_rows("control_tests", seed_dir)),
         "actions": count,
         "residual_ratings": len(ratings),

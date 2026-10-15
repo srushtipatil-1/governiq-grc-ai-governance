@@ -174,8 +174,11 @@ class AISystem(Base):
     decides_on_individuals: Mapped[bool] = mapped_column(Boolean)
     autonomy: Mapped[str] = mapped_column(String(30))
     lifecycle_stage: Mapped[str] = mapped_column(String(20))
-    external_tier: Mapped[str | None] = mapped_column(String(20))  # set by the classifier in Phase 7
+    domain: Mapped[str] = mapped_column(String(40), default="Other")  # what decisions the system supports
+    interacts_with_people: Mapped[bool] = mapped_column(Boolean, default=False)
+    external_tier: Mapped[str | None] = mapped_column(String(20))  # set by governiq.ai_governance.classify
     internal_tier: Mapped[int | None] = mapped_column(Integer)
+    tier_reasons: Mapped[str | None] = mapped_column(Text)  # why the classifier chose these tiers
 
     vendor: Mapped[Vendor | None] = relationship()
     owner: Mapped[User] = relationship()
@@ -321,3 +324,31 @@ class Action(Base):
 
     finding: Mapped[Finding] = relationship(back_populates="actions")
     owner: Mapped[User] = relationship()
+
+
+# ---------------------------------------------------------------- AI governance
+class AIAssessment(Base):
+    """A NIST AI RMF-structured risk and impact assessment of one AI system."""
+
+    __tablename__ = "ai_assessments"
+    __table_args__ = (
+        CheckConstraint("status IN ('Submitted', 'Approved', 'Rejected')", name="ck_aia_status"),
+        CheckConstraint(
+            "approver_id IS NULL OR approver_id != assessor_id", name="ck_aia_approver_not_assessor"
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True)
+    ai_system_id: Mapped[int] = mapped_column(ForeignKey("ai_systems.id"))
+    assessor_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    approver_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    status: Mapped[str] = mapped_column(String(20), default="Submitted")
+    answers_json: Mapped[str] = mapped_column(Text)
+    submitted_on: Mapped[date] = mapped_column(Date)
+    decided_on: Mapped[date | None] = mapped_column(Date)
+    decision_note: Mapped[str] = mapped_column(Text, default="")
+
+    ai_system: Mapped[AISystem] = relationship()
+    assessor: Mapped[User] = relationship(foreign_keys=[assessor_id])
+    approver: Mapped[User | None] = relationship(foreign_keys=[approver_id])

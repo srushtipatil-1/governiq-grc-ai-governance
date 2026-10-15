@@ -1,5 +1,5 @@
-code,name,purpose,model_type,build_type,vendor,owner,uses_personal_data,people_affected,decides_on_individuals,autonomy,lifecycle_stage
-AI-01,CreditLens,Scores loan applicants and recommends approve or reject,Gradient boosted trees,Built in-house,,meera.aigov,yes,400000,yes,Human on the loop,Deployed
-AI-02,FraudShield,Flags suspicious transactions for review,Vendor ML model,Bought,VEN-02,rahul.itops,yes,1200000,no,Human in the loop,Deployed
-AI-03,Sahayak,Answers customer questions about loans and repayments,Large language model via API,Built on third-party API,VEN-03,vikram.eng,yes,1200000,no,Autonomous,Validate
-AI-04,TalentSift,Screens job applicants' resumes and ranks them,Vendor ML model,Bought,VEN-04,neha.hr,yes,15000,yes,Human on the loop,Validate
+code,name,purpose,model_type,build_type,vendor,owner,uses_personal_data,people_affected,decides_on_individuals,autonomy,lifecycle_stage,domain,interacts_with_people
+AI-01,CreditLens,Scores loan applicants and recommends approve or reject,Gradient boosted trees,Built in-house,,vikram.eng,yes,400000,yes,Human on the loop,Deployed,Credit decisions,no
+AI-02,FraudShield,Flags suspicious transactions for review,Vendor ML model,Bought,VEN-02,rahul.itops,yes,1200000,no,Human in the loop,Deployed,Fraud detection,no
+AI-03,Sahayak,Answers customer questions about loans and repayments,Large language model via API,Built on third-party API,VEN-03,vikram.eng,yes,1200000,no,Autonomous,Validate,Customer service,yes
+AI-04,TalentSift,Screens job applicants' resumes and ranks them,Vendor ML model,Bought,VEN-04,neha.hr,yes,15000,yes,Human on the loop,Validate,Recruitment,no
