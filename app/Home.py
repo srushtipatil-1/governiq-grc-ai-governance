@@ -34,7 +34,10 @@ assurance = st.Page(
 ai_governance = st.Page(
     "views/ai_governance.py", title="AI governance", icon=":material/psychology:", url_path="ai"
 )
-page = st.navigation([home, risk_register, controls, assurance, ai_governance], position="hidden")
+lifecycle = st.Page(
+    "views/lifecycle.py", title="AI lifecycle", icon=":material/conversion_path:", url_path="lifecycle"
+)
+page = st.navigation([home, risk_register, controls, assurance, ai_governance, lifecycle], position="hidden")
 
 with st.sidebar:
     st.html(
@@ -46,6 +49,7 @@ with st.sidebar:
     st.page_link(controls)
     st.page_link(assurance)
     st.page_link(ai_governance)
+    st.page_link(lifecycle)
     planned = "".join(
         f'<div class="giq-side-item">{escape(name)}<span>{escape(phase)}</span></div>'
         for name, phase in MODULES

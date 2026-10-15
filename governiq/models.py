@@ -179,6 +179,7 @@ class AISystem(Base):
     external_tier: Mapped[str | None] = mapped_column(String(20))  # set by governiq.ai_governance.classify
     internal_tier: Mapped[int | None] = mapped_column(Integer)
     tier_reasons: Mapped[str | None] = mapped_column(Text)  # why the classifier chose these tiers
+    deployed_on: Mapped[date | None] = mapped_column(Date)  # set when the go-live gate is passed
 
     vendor: Mapped[Vendor | None] = relationship()
     owner: Mapped[User] = relationship()
@@ -352,3 +353,63 @@ class AIAssessment(Base):
     ai_system: Mapped[AISystem] = relationship()
     assessor: Mapped[User] = relationship(foreign_keys=[assessor_id])
     approver: Mapped[User | None] = relationship(foreign_keys=[approver_id])
+
+
+# ---------------------------------------------------------------- AI lifecycle
+class ModelCard(Base):
+    """Plain-language documentation of one AI system, kept with a version number."""
+
+    __tablename__ = "model_cards"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    ai_system_id: Mapped[int] = mapped_column(ForeignKey("ai_systems.id"), unique=True)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    intended_use: Mapped[str] = mapped_column(Text, default="")
+    out_of_scope: Mapped[str] = mapped_column(Text, default="")
+    training_data: Mapped[str] = mapped_column(Text, default="")
+    performance: Mapped[str] = mapped_column(Text, default="")
+    fairness: Mapped[str] = mapped_column(Text, default="")
+    limitations: Mapped[str] = mapped_column(Text, default="")
+    human_oversight: Mapped[str] = mapped_column(Text, default="")
+    transparency_notice: Mapped[str] = mapped_column(Text, default="")
+    updated_on: Mapped[date] = mapped_column(Date)
+    updated_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+
+    ai_system: Mapped[AISystem] = relationship()
+    updated_by: Mapped[User] = relationship()
+
+
+class StageGate(Base):
+    """A decision to move an AI system to its next lifecycle stage, with the checklist as it stood."""
+
+    __tablename__ = "stage_gates"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    ai_system_id: Mapped[int] = mapped_column(ForeignKey("ai_systems.id"))
+    from_stage: Mapped[str] = mapped_column(String(20))
+    to_stage: Mapped[str] = mapped_column(String(20))
+    decided_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    decided_on: Mapped[date] = mapped_column(Date)
+    checklist_json: Mapped[str] = mapped_column(Text, default="[]")
+    note: Mapped[str] = mapped_column(Text, default="")
+
+    ai_system: Mapped[AISystem] = relationship()
+    decided_by: Mapped[User] = relationship()
+
+
+class PostImplementationReview(Base):
+    """A periodic check that a live AI system still does what it was approved to do."""
+
+    __tablename__ = "post_implementation_reviews"
+    __table_args__ = (CheckConstraint("outcome IN ('Continue', 'Improve', 'Retire')", name="ck_pir_outcome"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(20), unique=True)
+    ai_system_id: Mapped[int] = mapped_column(ForeignKey("ai_systems.id"))
+    reviewer_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    reviewed_on: Mapped[date] = mapped_column(Date)
+    outcome: Mapped[str] = mapped_column(String(10))
+    notes: Mapped[str] = mapped_column(Text)
+
+    ai_system: Mapped[AISystem] = relationship()
+    reviewer: Mapped[User] = relationship()

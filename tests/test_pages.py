@@ -135,3 +135,21 @@ def test_submitting_an_assessment_creates_ai_risks(db_url):
     [b for b in at.button if b.label == "Submit for approval"][0].click().run(timeout=30)
     assert not at.exception
     assert "Submitted AIA-002 for TalentSift. New AI risks: RSK-031." in at.success[0].value
+
+
+def test_lifecycle_page_shows_gates_cards_and_reviews(db_url):
+    at = _open("views/lifecycle.py")
+    assert not at.exception
+    assert [tab.label for tab in at.tabs] == ["Stage gates", "Model cards", "Post-launch reviews"]
+    body = " ".join(str(h.proto) for h in at.get("html"))
+    assert "FND-004 on CTL-AI-09" in body  # Sahayak is first in the pipeline and blocked
+    assert any("FraudShield**: overdue" in m.value for m in at.markdown)
+
+
+def test_blocked_go_live_explains_why(db_url):
+    at = AppTest.from_file(HOME)
+    at.session_state["actor"] = "meera.aigov"
+    at.run(timeout=30)
+    at.switch_page("views/lifecycle.py").run(timeout=30)
+    [b for b in at.button if b.label.startswith("Move Sahayak")][0].click().run(timeout=30)
+    assert "Sahayak cannot move to Deployed" in at.error[0].value

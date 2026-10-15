@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from governiq.ai_governance import QUESTIONS, decide_assessment, submit_assessment
 from governiq.assurance import NewTest, record_test, rerate_residual
+from governiq.lifecycle import record_review, save_model_card
 from governiq.models import Action, Control, Finding, User
 from governiq.seed import SEED_DIR
 
@@ -77,8 +78,27 @@ def seed_assurance(session: Session, seed_dir: Path = SEED_DIR) -> dict[str, int
     answers = {q.id: "Not applicable" if q.allow_na else "Yes" for q in QUESTIONS}
     submitted = submit_assessment(session, "AI-01", answers, actor="priya.analyst", today=date(2026, 10, 8))
     decide_assessment(session, submitted.assessment.code, True, "Evidence reviewed.", actor="meera.aigov")
+    # Model cards and post-implementation reviews (Phase 8).
+    cards = _rows("model_cards", seed_dir)
+    for row in cards:
+        fields = {k: v for k, v in row.items() if k not in ("system", "updated_by", "updated_on")}
+        save_model_card(
+            session, row["system"], fields, row["updated_by"], today=date.fromisoformat(row["updated_on"])
+        )
+    reviews = _rows("pir_reviews", seed_dir)
+    for row in reviews:
+        record_review(
+            session,
+            row["system"],
+            row["outcome"],
+            row["notes"],
+            row["reviewer"],
+            today=date.fromisoformat(row["reviewed_on"]),
+        )
     return {
         "ai_assessments": 1,
+        "model_cards": len(cards),
+        "pir_reviews": len(reviews),
         "control_tests": len(_rows("control_tests", seed_dir)),
         "actions": count,
         "residual_ratings": len(ratings),

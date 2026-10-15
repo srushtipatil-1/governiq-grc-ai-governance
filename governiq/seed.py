@@ -77,6 +77,7 @@ def seed(session: Session, seed_dir: Path = SEED_DIR) -> dict[str, int]:
             lifecycle_stage=r["lifecycle_stage"],
             domain=r["domain"],
             interacts_with_people=_yes(r["interacts_with_people"]),
+            deployed_on=date.fromisoformat(r["deployed_on"]) if r["deployed_on"] else None,
         )
     for system in ai_systems.values():
         apply_classification(system)  # tiers come from the same rules the app uses
