@@ -244,3 +244,28 @@
 .giq-login-hero li { font-size: 15px; color: var(--ink); padding: 8px 0; border-bottom: 1px solid var(--line); }
 .giq-login-hero li b { font-family: var(--mono); font-weight: 500; font-size: 12px; color: var(--teal); margin-right: 10px; }
 .giq-login-brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 600; color: var(--ink); }
+
+/* Dashboard tiles and KRI list */
+.giq-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 4px 0 20px; }
+.giq-tile { background: #FFFFFF; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.giq-tile span { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.giq-tile b { display: block; font-size: 30px; font-weight: 600; color: var(--ink); line-height: 1.2; margin: 4px 0 2px; }
+.giq-tile small { font-size: 13px; color: var(--muted); }
+.giq-tile.warn { border-top: 4px solid var(--brick); }
+.giq-tile.ok { border-top: 4px solid var(--teal); }
+.giq-tile.mid { border-top: 4px solid var(--marigold, #E8A33D); }
+.giq-kri { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.giq-kri li { display: grid; grid-template-columns: 70px minmax(0, 1fr) 140px 74px; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--ink); }
+.giq-kri li code { font-family: var(--mono); font-size: 12px; color: var(--muted); background: none; padding: 0; }
+.giq-kri li small { display: block; font-size: 12px; color: var(--muted); }
+.giq-kri li .rag { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 6px; text-align: center; }
+.rag.Red { background: #F6DDE0; color: #8E2433; }
+.rag.Amber { background: #FBEBD2; color: #8A5A12; }
+.rag.Green { background: #DCEFEA; color: #17605A; }
+@media (max-width: 760px) {
+  .giq-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .giq-kri li { grid-template-columns: 1fr 74px; }
+  .giq-kri li code, .giq-kri li .val { display: none; }
+}
+.giq-kri.compact li { grid-template-columns: 54px minmax(0, 1fr) 64px; gap: 10px; }
+.giq-kri.compact li .val { display: none; }

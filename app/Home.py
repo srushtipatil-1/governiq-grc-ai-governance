@@ -46,7 +46,10 @@ genai = st.Page("views/genai.py", title="GenAI assurance", icon=":material/smart
 audit = st.Page(
     "views/admin.py", title="Audit trail & users", icon=":material/shield_lock:", url_path="audit"
 )
-modules = [home, risk_register, controls, assurance, ai_governance, lifecycle, model_risk, genai]
+dashboard = st.Page(
+    "views/dashboard.py", title="Dashboard", icon=":material/dashboard:", url_path="dashboard"
+)
+modules = [home, dashboard, risk_register, controls, assurance, ai_governance, lifecycle, model_risk, genai]
 
 user = current_user()
 if user is None:

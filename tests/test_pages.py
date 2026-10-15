@@ -234,3 +234,19 @@ def test_sign_out_returns_to_the_sign_in_page(db_url):
     [b for b in at.button if b.label == "Sign out"][0].click().run(timeout=30)
     assert "auth_user" not in at.session_state
     assert any(b.label == "Sign in" for b in at.button)
+
+
+def test_dashboard_shows_tiles_kris_and_downloads(db_url):
+    at = _open("views/dashboard.py")
+    assert not at.exception
+    assert [tab.label for tab in at.tabs] == [
+        "Overview",
+        "Key risk indicators",
+        "Committee pack",
+        "Audit pack",
+    ]
+    body = " ".join(str(h.proto) for h in at.get("html"))
+    assert "5 key risk indicators are red" in body and "Leavers whose accounts are still active" in body
+    labels = [d.proto.label for d in at.get("download_button")]
+    assert "Download committee pack (PDF)" in labels
+    assert any(label.startswith("Download audit pack (ZIP") for label in labels)

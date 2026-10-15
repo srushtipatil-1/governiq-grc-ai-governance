@@ -137,8 +137,11 @@ RCM_COLUMNS = [
 
 def rcm_rows(session: Session) -> list[dict]:
     """One row per risk-control pair, in the layout auditors use for a Risk & Control Matrix."""
+    from governiq.assurance import latest_operating_results  # local import keeps module layering simple
+
     rows = []
     linked = risks_by_control(session)
+    latest = latest_operating_results(session)
     for control in load_controls(session):
         for risk in linked.get(control.code, []):
             refs = "; ".join(f"{FRAMEWORK_LABELS[r.framework.code]} {r.ref}" for r in control.requirements)
@@ -164,7 +167,12 @@ def rcm_rows(session: Session) -> list[dict]:
                         "that the control operated as designed throughout the period."
                     ),
                     "Sample size": sample,
-                    "Test result": "Not tested",
+                    "Test result": (
+                        f"{latest[control.code].result} ({latest[control.code].code}, "
+                        f"{latest[control.code].performed_on:%d %b %Y})"
+                        if control.code in latest
+                        else "Not tested"
+                    ),
                 }
             )
     return sorted(rows, key=lambda row: (row["Risk ID"], row["Control ID"]))

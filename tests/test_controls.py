@@ -71,7 +71,8 @@ def test_rcm_has_one_row_per_risk_control_pair(session):
     rows = rcm_rows(session)
     assert len(rows) == pairs == 47
     assert list(rows[0]) == RCM_COLUMNS
-    assert {row["Test result"] for row in rows} == {"Not tested"}
+    results = {row["Test result"].split(" (")[0] for row in rows}
+    assert results == {"Effective", "Ineffective", "Not tested"}  # filled from the latest operating test
 
 
 @pytest.mark.parametrize(("frequency", "size"), [("Annual", "1"), ("Quarterly", "2"), ("Daily", "20")])
